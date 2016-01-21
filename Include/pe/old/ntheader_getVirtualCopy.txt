@@ -1,0 +1,50 @@
+    /*
+     * Returns a virtual memory copy. The functions returns a copy of the
+     * virtual memory, starting from 'virtualBeing'...'virtualEnd'. Any unknown
+     * memory region, will be filled with 'IMAGE_RDATA_CELL'.
+     *
+     * virtualBegin - The starting virtual address to get the information from
+     * virtualEnd - The ending virtual address to get the information
+     * out - Will be filled with 'virtualEnd-virtualBegin' bytes of information
+     *       regarding to the virtual memory copy.
+     *
+     * NOTE: This function is deprecated. Please use the new getPeMemory() API
+     *       instead.
+     */
+	void getVirtualCopy(addressNumericValue virtualBegin,
+                        addressNumericValue virtualEnd,
+                        cStream& out) const;
+
+
+
+void cNtHeader::getVirtualCopy(addressNumericValue virtualBegin,
+                               addressNumericValue virtualEnd,
+                               cStream& out) const
+{
+    // Create empty data
+    out.changeSize(virtualEnd - virtualBegin);
+    fill(out.begin(), out.end(), IMAGE_RDATA_CELL_CODE);
+
+    // Try to find the location within the sections
+    for (cList<cSectionPtr>::iterator i = m_sections.begin();
+        i != m_sections.end();
+        i++)
+    {
+        cNtSectionHeader& ntSection = *((cNtSectionHeader*)(*i).getPointer());
+        // For each section check if we have data within the range
+        addressNumericValue SectionAddress = ntSection.VirtualAddress;
+        addressNumericValue SectionLength  = ntSection.SizeOfRawData;
+        addressNumericValue SectionEnd     = SectionAddress + SectionLength;
+
+        if ((SectionEnd > virtualBegin) && (SectionAddress < virtualEnd))
+        {
+            // There is some overlapped
+            addressNumericValue cBegin = t_max(SectionAddress, virtualBegin);
+            addressNumericValue cEnd   = t_min(SectionEnd,     virtualEnd);
+
+            memcpy(out.getBuffer() + (cBegin - virtualBegin),
+                   ntSection.getData().getBuffer() + (cBegin - SectionAddress),
+                   cEnd - cBegin);
+        }
+    }
+}

@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug ring0|Win32">
+      <Configuration>Debug ring0</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ring0|x64">
+      <Configuration>Debug ring0</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Ring0|Win32">
+      <Configuration>Release Ring0</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Ring0|x64">
+      <Configuration>Release Ring0</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="XP Debug|Win32">
+      <Configuration>XP Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="XP Debug|x64">
+      <Configuration>XP Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="XP Release|Win32">
+      <Configuration>XP Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="XP Release|x64">
+      <Configuration>XP Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7E3F7378-91A7-47EB-8A3D-EFEFF66196E1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XP Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XP Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XP Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XP Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Ring0|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Ring0|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug ring0|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug ring0|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='XP Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='XP Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='XP Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='XP Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Ring0|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Ring0|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug ring0|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug ring0|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">out\libDebug\peLib\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">out\libDebug64\peLib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">out\objDebug\peLib\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">out\objDebug64\peLib\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">out\libRelease\peLib\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">out\libRelease64\peLib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">out\objRelease\peLib\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">out\objRelease64\peLib\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug ring0|Win32'">out\libDebugRing0\peLib\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug ring0|x64'">out\libDebugRing0\peLib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug ring0|Win32'">out\objDebugRing0\peLib\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug ring0|x64'">out\objDebugRing0\peLib\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Ring0|Win32'">out\libReleaseRing0\peLib\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Ring0|x64'">out\libReleaseRing0\peLib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Ring0|Win32'">out\objReleaseRing0\peLib\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Ring0|x64'">out\objReleaseRing0\peLib\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='XP Debug|Win32'">out\libDebugXPDDK\peLib\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='XP Debug|x64'">out\libDebugXPDDK\peLib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='XP Debug|Win32'">out\objDebugXPDDK\peLib\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='XP Debug|x64'">out\objDebugXPDDK\peLib\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='XP Release|Win32'">out\libReleaseXPDDK\peLib\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='XP Release|x64'">out\libReleaseXPDDK\peLib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='XP Release|Win32'">out\objReleaseXPDDK\peLib\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='XP Release|x64'">out\objReleaseXPDDK\peLib\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG;XSTL_UNICODE;_LIB;_MBCS;UNICODE;PE_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG;XSTL_UNICODE;_LIB;_MBCS;UNICODE;PE_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;XSTL_UNICODE;_LIB;_MBCS;XSTL_UNICODE_;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;XSTL_UNICODE;_LIB;_MBCS;XSTL_UNICODE_;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug ring0|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(NTDDK_PATH)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;_DEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;NTDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug ring0|x64'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(NTDDK_PATH)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;_DEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;NTDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Ring0|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(NTDDK_PATH)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;NDEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;NTDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Ring0|x64'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(NTDDK_PATH)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;NDEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;NTDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='XP Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(XPDDK_PATH)\inc\ddk\wxp;$(XPDDK_PATH)\inc\wxp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;_DEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;XPDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='XP Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(XPDDK_PATH)\inc\ddk\wxp;$(XPDDK_PATH)\inc\wxp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;_DEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;XPDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)peLib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='XP Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(XPDDK_PATH)\inc\ddk\wxp;$(XPDDK_PATH)\inc\wxp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;NDEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;XPDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='XP Release|x64'">
+    <ClCompile>
+      <AdditionalOptions>/EHa /GX %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(XSTL_PATH)\Include;$(PELIB_PATH)\Include;$(RAZTECH_PATH);$(XDK_PATH)\Include;$(XPDDK_PATH)\inc\ddk\wxp;$(XPDDK_PATH)\inc\wxp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DRIVER;WIN32;NDEBUG;XSTL_UNICODE;UNICODE;_X86_;i386;STD_CALL;CONDITION_HANDLING;_KERNEL;XPDDK;EHLIB_SPECIAL_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\dosheader.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\dosSection.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\humanStringTranslation.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirCli.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirExport.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntheader.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntPrivateDirectory.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntsectionheader.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\peFile.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\section.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirReloc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\datastruct.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\dosheader.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\dosSection.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\humanStringTranslation.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntdir.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirCli.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirExport.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntheader.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntPrivateDirectory.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntsectionheader.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\peFile.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\section.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\sectionTypes.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirReloc.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
