@@ -81,8 +81,6 @@ public:
     virtual bool canBeHandledByMe(SectionType type);
 
 private:
-    // Stores the position inside the disk
-    uint m_diskLocation;
     // Stores the segment
     uint16 m_segment;
 };
