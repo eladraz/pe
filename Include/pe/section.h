@@ -113,6 +113,9 @@ public:
              SectionType type = SECTION_TYPE_DUMP,
              SectionFlag flags = SECTION_FLAG_NORMAL);
 
+    // Virtual constructor. You can inherit from me
+    virtual ~cSection() {};
+
     /*
      * Return the size of the forkable stream, without creating new stream.
      */
