@@ -1,4 +1,7 @@
 ![unmaintained](http://img.shields.io/badge/status-unmaintained-red.png)
+[![build status](https://travis-ci.org/eladraz/pe.svg?branch=master)](https://travis-ci.org/eladraz/pe/)
+[![coverity status](https://scan.coverity.com/projects/11789/badge.svg)](https://scan.coverity.com/projects/eladraz-pe)
+
 
 pe lib
 ======

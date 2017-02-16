@@ -1,0 +1,45 @@
+sudo: required
+dist: trusty
+
+env:
+  global:
+  # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+  #   via the "travis encrypt" command using the project repo's public key
+   - secure: "4MhMh89wz36kk5Yk7KFoMe7FwndbbiOiOryc+8T6hGbMmbMpCK/DAIg2kYzvrfxAPXDxvSvTxYZVOL58Fauyk2pqBJqvT8o6ugF2pUlApqfvfonSAuzdsCpnGCzS1gnidDGvX7NUwyYJ+YRMc/BkuwSPwbJAqInjvBjY/Fhes76LnPtPOaIwPEkOZ/V1xFIVC419pvPhp50o11F0+aR56Ss7i2iYt6JWxBAghpv2/m0Z3awJdVGHgS9mGvs3dfVl8aFwcUR8PWZgdvIIWxsGSlpCQZJDvtXA0OfoLFYxSgTIbmJdCwh+GivcAB/rJPfKAzJ96ODXk+ArSc/g0EgfxAVMsdvOloMzE9fiJIUH4u1AjpuiaBdpQbmESBLtjw0HnZFbDz6AgkQiJKFh6E+kXeeadeLIR/SAgsXh1uZY2tWgX1JUgRdj2NyDYbXsvcVDK9ixzfgHq9EqthDyRcTY1QOXZ4qE7noJoiYy+7JHKF9RfiDYRmOSEXpvSaWp5tGL7QnHLxvEqZJQX/tKWVnR+Qi0rCLWFtfKCIX3VO/cOvp/vbVVNCocbvBpYHsU2wzYRZ5CaQzJPGGoA0rWUt3RYQ3HYNM24JiV4MphywcLhheRPcxSDimZAT+tsPrnmtF9qS+EoI8sD4NMCphjz0lFUjU9UI19pQQKNkxWFvU9PGo="
+
+before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+language: c
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  - sudo apt-get install automake autoconf libtool build-essential git-core cmake
+  - pushd . && cd $HOME
+  - git clone https://github.com/eladraz/xStl
+  - export XSTL_PATH=`pwd`/xStl
+  - cd xStl
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make -j 4
+  - popd
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make -j 4
+
+addons:
+  coverity_scan:
+    project:
+      name: "eladraz/pe"
+      description: "Portable Executable library builds from Travis-CI"
+    notification_email: e@eladraz.com
+    build_command_prepend: "mkdir -p build && cd build && cmake .."
+    build_command:  "make -j 4"
+    branch_pattern: master
