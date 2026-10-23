@@ -295,7 +295,7 @@ void cDosHeader::internalReadSections(cMemoryAccesserStream& stream)
     }
 
     /* Rearrange the new segments */
-    boubbleSort(segmentsInUsed.begin(), segmentsInUsed.end());
+    bubbleSort(segmentsInUsed.begin(), segmentsInUsed.end());
 
     // Start scan all the segments and add them as new sections
     uint executableLengthWithoutHeader = stream.length() - headerSize;
