@@ -5,20 +5,32 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  unix:
+    name: ${{ matrix.os }} ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc, clang]
+        include:
+          - { os: ubuntu-latest, compiler: gcc,   cxx: g++ }
+          - { os: ubuntu-latest, compiler: clang, cxx: clang++ }
+          - { os: macos-latest,  compiler: clang, cxx: clang++ }
     env:
       CC: ${{ matrix.compiler }}
-      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+      CXX: ${{ matrix.cxx }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y build-essential cmake clang
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake clang gcc-mingw-w64-i686
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install cmake mingw-w64
 
       - name: Build xStl
         run: |
@@ -33,5 +45,41 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake ..
-          make -j4
+          (cmake .. && make -j4) > make.log 2>&1 || { echo "::error::$(grep -iE 'error|undefined|ld:' make.log | head -15 | sed ':a;N;$!ba;s/\n/%0A/g')"; exit 1; }
+
+      - name: Test dumpPE
+        run: |
+          i686-w64-mingw32-gcc -shared -o build/fixture.dll tests/fixture.c
+          sh tests/dumpPE.sh out/bin/dumpPE build/fixture.dll pe_test_add pe_test_sub pe_test_mul
+
+  windows:
+    name: windows ${{ matrix.configuration }} ${{ matrix.platform }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+        platform: [Win32, x64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.platform == 'Win32' && 'x86' || 'x64' }}
+
+      - name: Fetch xStl
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/eladraz/xStl "$env:GITHUB_WORKSPACE\..\xStl"
+          "XSTL_PATH=$((Resolve-Path "$env:GITHUB_WORKSPACE\..\xStl").Path)" >> $env:GITHUB_ENV
+          "PELIB_PATH=$env:GITHUB_WORKSPACE" >> $env:GITHUB_ENV
+
+      - name: Build peLib and xStl
+        run: msbuild peLib.sln /m /nologo "/p:Configuration=${{ matrix.configuration }};Platform=${{ matrix.platform }};PlatformToolset=v143"
+
+      - name: Build and test dumpPE
+        shell: pwsh
+        run: ./tests/windows.ps1 -Configuration ${{ matrix.configuration }} -Platform ${{ matrix.platform }}

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.6...3.5)
 project (pe)
 set (pe_VERSION_MAJOR 1)
 set (pe_VERSION_MINOR 0)
@@ -72,4 +72,12 @@ if (UNIX)
 endif()
 if (WIN32)
 	add_definitions(-DWIN32)
+endif()
+
+option(PE_BUILD_TOOLS "Build the dumpPE tool" ON)
+if(PE_BUILD_TOOLS)
+	add_executable(dumpPE tools/dumpPE.cpp)
+	target_link_libraries(dumpPE pe_static ${LIBXSTLCM} ${LIBXSTL} ${LIBXSTL_DATA}
+	                      ${LIBXSTL_EXCEPT} ${LIBXSTL_OS} ${LIBXSTL_PARSER}
+	                      ${LIBXSTL_STREAM} ${LIBXSTL_UNIX} ${CMAKE_DL_LIBS} pthread)
 endif()
