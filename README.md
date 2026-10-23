@@ -1,5 +1,5 @@
-![unmaintained](http://img.shields.io/badge/status-unmaintained-red.png)
-[![build status](https://travis-ci.org/eladraz/pe.svg?branch=master)](https://travis-ci.org/eladraz/pe/)
+![maintained](http://img.shields.io/badge/status-maintained-brightgreen.png)
+[![build status](https://github.com/eladraz/pe/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/eladraz/pe/actions/workflows/build.yml)
 [![coverity status](https://scan.coverity.com/projects/11789/badge.svg)](https://scan.coverity.com/projects/eladraz-pe)
 
 

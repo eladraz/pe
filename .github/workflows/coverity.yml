@@ -1,0 +1,57 @@
+name: coverity
+
+# Requires the COVERITY_SCAN_TOKEN repository secret (the Travis encrypted
+# token cannot be reused).
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      COVERITY_SCAN_TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+
+      - name: Build xStl
+        run: |
+          git clone --depth 1 https://github.com/eladraz/xStl "$HOME/xStl"
+          mkdir -p "$HOME/xStl/build"
+          cd "$HOME/xStl/build"
+          cmake ..
+          make -j4
+          echo "XSTL_PATH=$HOME/xStl" >> "$GITHUB_ENV"
+
+      - name: Download Coverity build tool
+        if: env.COVERITY_SCAN_TOKEN != ''
+        run: |
+          curl -sSf -o cov-analysis.tgz \
+            --data "token=$COVERITY_SCAN_TOKEN&project=eladraz%2Fpe" \
+            https://scan.coverity.com/download/linux64
+          mkdir cov-analysis
+          tar -xzf cov-analysis.tgz --strip-components=1 -C cov-analysis
+
+      - name: Build with cov-build
+        if: env.COVERITY_SCAN_TOKEN != ''
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          ../cov-analysis/bin/cov-build --dir ../cov-int make -j4
+
+      - name: Submit to Coverity Scan
+        if: env.COVERITY_SCAN_TOKEN != ''
+        run: |
+          tar -czf cov-int.tgz cov-int
+          curl -sSf \
+            --form "token=$COVERITY_SCAN_TOKEN" \
+            --form "email=e@eladraz.com" \
+            --form "file=@cov-int.tgz" \
+            --form "version=$GITHUB_SHA" \
+            --form "description=Portable Executable library builds from GitHub Actions" \
+            "https://scan.coverity.com/builds?project=eladraz%2Fpe"

@@ -1,0 +1,37 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    env:
+      CC: ${{ matrix.compiler }}
+      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake clang
+
+      - name: Build xStl
+        run: |
+          git clone --depth 1 https://github.com/eladraz/xStl "$HOME/xStl"
+          mkdir -p "$HOME/xStl/build"
+          cd "$HOME/xStl/build"
+          cmake ..
+          make -j4
+          echo "XSTL_PATH=$HOME/xStl" >> "$GITHUB_ENV"
+
+      - name: Build pe
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make -j4
