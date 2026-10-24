@@ -26,7 +26,7 @@ jobs:
         if: runner.os == 'Linux'
         env:
           DEBIAN_FRONTEND: noninteractive
-        run: sudo apt-get update && sudo apt-get install -y build-essential cmake clang gcc-mingw-w64-i686
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake clang gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
 
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
@@ -51,6 +51,8 @@ jobs:
         run: |
           i686-w64-mingw32-gcc -shared -o build/fixture.dll tests/fixture.c
           sh tests/dumpPE.sh out/bin/dumpPE build/fixture.dll pe_test_add pe_test_sub pe_test_mul
+          x86_64-w64-mingw32-gcc -shared -o build/fixture64.dll tests/fixture.c
+          sh tests/dumpPE.sh out/bin/dumpPE build/fixture64.dll pe_test_add pe_test_sub pe_test_mul
 
   windows:
     name: windows ${{ matrix.configuration }} ${{ matrix.platform }}

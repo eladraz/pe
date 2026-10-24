@@ -112,7 +112,9 @@ void cNtDirReloc::read(basicInput& stream)
             case IMAGE_REL_BASED_ABSOLUTE:
                 break;
             case IMAGE_REL_BASED_HIGHLOW:
-                // Calculate and set the offset address
+            case IMAGE_REL_BASED_DIR64:
+                // Calculate and set the offset address. HIGHLOW is a 32 bit
+                // relocation (PE32), DIR64 is a 64 bit relocation (PE32+)
                 m_relocOffsets[totalRelocs].m_offsetAddress = currReloc.VirtualAddress + (relocItem & 0xFFF);
                 totalRelocs++;
                 break;

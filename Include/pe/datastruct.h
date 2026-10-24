@@ -144,6 +144,8 @@ typedef struct XSTL_PACKED _IMAGE_FILE_HEADER {
 #define IMAGE_FILE_MACHINE_MIPSFPU16         0x0466  // MIPS
 #define IMAGE_FILE_MACHINE_ALPHA64           0x0284  // ALPHA64
 #define IMAGE_FILE_MACHINE_AXP64             IMAGE_FILE_MACHINE_ALPHA64
+#define IMAGE_FILE_MACHINE_AMD64             0x8664  // AMD64 (K8)
+#define IMAGE_FILE_MACHINE_ARM64             0xAA64  // ARM64 Little-Endian
 //
 // Directory format.
 //

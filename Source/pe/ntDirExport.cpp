@@ -143,8 +143,7 @@ void cNtDirExport::read(basicInput& stream,
 
     for (i = 0; i < m_exportDirectory.NumberOfFunctions; i++)
     {
-        // TODO!
-        // The export directory is set for 32bit files only!
+        // The export addresses are 32 bit RVAs for both PE32 and PE32+
         uint32 address = 0;
         stream.streamReadUint32(address);
         m_exportFunctions[i].m_address =

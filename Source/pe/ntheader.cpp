@@ -82,6 +82,13 @@ cNtHeader::cNtHeader(const IMAGE_NT_HEADERS32& other) :
     changeNtHeader(other);
 }
 
+cNtHeader::cNtHeader(const IMAGE_NT_HEADERS64& other) :
+    m_fastImportDll(NULL),
+    m_memoryImage(NULL)
+{
+    changeNtHeader(other);
+}
+
 void cNtHeader::changeNtHeader(const IMAGE_NT_HEADERS32& other)
 {
     this->Signature                       = other.Signature;
@@ -131,7 +138,69 @@ void cNtHeader::changeNtHeader(const IMAGE_NT_HEADERS32& other)
     }
 }
 
+void cNtHeader::changeNtHeader(const IMAGE_NT_HEADERS64& other)
+{
+    // Keep the full PE32+ header
+    m_ntHeaders64 = other;
+
+    // And copy the common fields. The 64 bit fields are truncated, see
+    // getImageBase() and getNtHeaders64()
+    this->Signature                       = other.Signature;
+    this->FileHeader.Machine              = other.FileHeader.Machine;
+    this->FileHeader.NumberOfSections     = other.FileHeader.NumberOfSections;
+    this->FileHeader.TimeDateStamp        = other.FileHeader.TimeDateStamp;
+    this->FileHeader.PointerToSymbolTable = other.FileHeader.PointerToSymbolTable;
+    this->FileHeader.NumberOfSymbols      = other.FileHeader.NumberOfSymbols;
+    this->FileHeader.SizeOfOptionalHeader = other.FileHeader.SizeOfOptionalHeader;
+    this->FileHeader.Characteristics      = other.FileHeader.Characteristics;
+    this->OptionalHeader.Magic                        = other.OptionalHeader.Magic;
+    this->OptionalHeader.MajorLinkerVersion           = other.OptionalHeader.MajorLinkerVersion;
+    this->OptionalHeader.MinorLinkerVersion           = other.OptionalHeader.MinorLinkerVersion;
+    this->OptionalHeader.SizeOfCode                   = other.OptionalHeader.SizeOfCode;
+    this->OptionalHeader.SizeOfInitializedData        = other.OptionalHeader.SizeOfInitializedData;
+    this->OptionalHeader.SizeOfUninitializedData      = other.OptionalHeader.SizeOfUninitializedData;
+    this->OptionalHeader.AddressOfEntryPoint          = other.OptionalHeader.AddressOfEntryPoint;
+    this->OptionalHeader.BaseOfCode                   = other.OptionalHeader.BaseOfCode;
+    this->OptionalHeader.BaseOfData                   = 0;
+    this->OptionalHeader.ImageBase                    = (DWORD)other.OptionalHeader.ImageBase;
+    this->OptionalHeader.SectionAlignment             = other.OptionalHeader.SectionAlignment;
+    this->OptionalHeader.FileAlignment                = other.OptionalHeader.FileAlignment;
+    this->OptionalHeader.MajorOperatingSystemVersion  = other.OptionalHeader.MajorOperatingSystemVersion;
+    this->OptionalHeader.MinorOperatingSystemVersion  = other.OptionalHeader.MinorOperatingSystemVersion;
+    this->OptionalHeader.MajorImageVersion            = other.OptionalHeader.MajorImageVersion;
+    this->OptionalHeader.MinorImageVersion            = other.OptionalHeader.MinorImageVersion;
+    this->OptionalHeader.MajorSubsystemVersion        = other.OptionalHeader.MajorSubsystemVersion;
+    this->OptionalHeader.MinorSubsystemVersion        = other.OptionalHeader.MinorSubsystemVersion;
+    this->OptionalHeader.Win32VersionValue            = other.OptionalHeader.Win32VersionValue;
+    this->OptionalHeader.SizeOfImage                  = other.OptionalHeader.SizeOfImage;
+    this->OptionalHeader.SizeOfHeaders                = other.OptionalHeader.SizeOfHeaders;
+    this->OptionalHeader.CheckSum                     = other.OptionalHeader.CheckSum;
+    this->OptionalHeader.Subsystem                    = other.OptionalHeader.Subsystem;
+    this->OptionalHeader.DllCharacteristics           = other.OptionalHeader.DllCharacteristics;
+    this->OptionalHeader.SizeOfStackReserve           = (DWORD)other.OptionalHeader.SizeOfStackReserve;
+    this->OptionalHeader.SizeOfStackCommit            = (DWORD)other.OptionalHeader.SizeOfStackCommit;
+    this->OptionalHeader.SizeOfHeapReserve            = (DWORD)other.OptionalHeader.SizeOfHeapReserve;
+    this->OptionalHeader.SizeOfHeapCommit             = (DWORD)other.OptionalHeader.SizeOfHeapCommit;
+    this->OptionalHeader.LoaderFlags                  = other.OptionalHeader.LoaderFlags;
+    this->OptionalHeader.NumberOfRvaAndSizes          = other.OptionalHeader.NumberOfRvaAndSizes;
+
+    /* Copy the directories entries */
+    for (uint i = 0; i < IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++)
+    {
+        this->OptionalHeader.DataDirectory[i].Size           = other.OptionalHeader.DataDirectory[i].Size;
+        this->OptionalHeader.DataDirectory[i].VirtualAddress = other.OptionalHeader.DataDirectory[i].VirtualAddress;
+    }
+}
+
 cNtHeader& cNtHeader::operator = (const IMAGE_NT_HEADERS32& other)
+{
+    m_sections.removeAll();
+    changeNtHeader(other);
+
+    return *this;
+}
+
+cNtHeader& cNtHeader::operator = (const IMAGE_NT_HEADERS64& other)
 {
     m_sections.removeAll();
     changeNtHeader(other);
@@ -147,22 +216,51 @@ void cNtHeader::read(basicInput& stream,
     m_memoryImage = cForkStreamPtr(NULL);
     m_fastImportDll = cForkStreamPtr(NULL);
 
+    // Read the signature, the file-header and the optional-header magic.
+    // These fields are common to both PE32 and PE32+ headers.
     IMAGE_NT_HEADERS32 newHeader;
     memset(&newHeader, 0, sizeof(newHeader));
-    // Read all header, except RVA
-    stream.pipeRead(&newHeader,
-                    sizeof(newHeader) -
-                        (IMAGE_NUMBEROF_DIRECTORY_ENTRIES *
-                        sizeof(IMAGE_DATA_DIRECTORY)));
+    const uint commonSize = sizeof(newHeader.Signature) +
+                            sizeof(newHeader.FileHeader) +
+                            sizeof(newHeader.OptionalHeader.Magic);
+    stream.pipeRead(&newHeader, commonSize);
 
     CHECK(newHeader.Signature == IMAGE_NT_SIGNATURE);
-    changeNtHeader(newHeader);
+
+    if (newHeader.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
+    {
+        // PE32+ file. Read the rest of the header, except RVA
+        IMAGE_NT_HEADERS64 newHeader64;
+        memset(&newHeader64, 0, sizeof(newHeader64));
+        memcpy(&newHeader64, &newHeader, commonSize);
+        stream.pipeRead((uint8*)(&newHeader64) + commonSize,
+                        sizeof(newHeader64) - commonSize -
+                            (IMAGE_NUMBEROF_DIRECTORY_ENTRIES *
+                            sizeof(IMAGE_DATA_DIRECTORY)));
+        changeNtHeader(newHeader64);
+    } else
+    {
+        // Read the rest of the header, except RVA
+        stream.pipeRead((uint8*)(&newHeader) + commonSize,
+                        sizeof(newHeader) - commonSize -
+                            (IMAGE_NUMBEROF_DIRECTORY_ENTRIES *
+                            sizeof(IMAGE_DATA_DIRECTORY)));
+        changeNtHeader(newHeader);
+    }
 
     // Read DATA_DIRCTORIES. Limited by the number of RVA
     uint i;
     for (i = 0; i < this->OptionalHeader.NumberOfRvaAndSizes; i++)
         stream.pipeRead(&this->OptionalHeader.DataDirectory[i],
                         sizeof(IMAGE_DATA_DIRECTORY));
+
+    // Keep the PE32+ header directories as well
+    if (is64bit())
+    {
+        for (i = 0; i < IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++)
+            m_ntHeaders64.OptionalHeader.DataDirectory[i] =
+                this->OptionalHeader.DataDirectory[i];
+    }
 
     // Test whether we should read sections
     if (!shouldReadSections)
@@ -174,7 +272,7 @@ void cNtHeader::read(basicInput& stream,
         // Read section
         cNtSectionHeader* appenedSection = new cNtSectionHeader(
                             // If we wanted to specifiy the image base for ourselves, use it
-                            m_trueImageBase ? m_trueImageBase : this->OptionalHeader.ImageBase,
+                            m_trueImageBase ? m_trueImageBase : (addressNumericValue)getImageBase(),
                             stream,
                             SECTION_TYPE_WINDOWS_CODE,
                             true,
@@ -218,7 +316,7 @@ void cNtHeader::read(cMemoryAccesserStream& stream,
     {
         // Read section
         cNtSectionHeader* appenedSection = new cNtSectionHeader(
-            this->OptionalHeader.ImageBase,
+            (addressNumericValue)getImageBase(),
             stream,
             SECTION_TYPE_WINDOWS_CODE,
             true,
@@ -275,11 +373,20 @@ void cNtHeader::write(basicIO& stream,
                       bool isMemory)
 {
     // Start writing all the fields of the IMAGE_NT_HEADERS struct
-    IMAGE_NT_HEADERS* imageNtHeaders = (IMAGE_NT_HEADERS*)(&this->Signature);
-    stream.pipeWrite(imageNtHeaders,
-                     sizeof(IMAGE_NT_HEADERS) -
-                        ((IMAGE_NUMBEROF_DIRECTORY_ENTRIES - this->OptionalHeader.NumberOfRvaAndSizes) *
-                         sizeof(IMAGE_DATA_DIRECTORY)));
+    if (is64bit())
+    {
+        stream.pipeWrite(&m_ntHeaders64,
+                         sizeof(IMAGE_NT_HEADERS64) -
+                            ((IMAGE_NUMBEROF_DIRECTORY_ENTRIES - this->OptionalHeader.NumberOfRvaAndSizes) *
+                             sizeof(IMAGE_DATA_DIRECTORY)));
+    } else
+    {
+        IMAGE_NT_HEADERS32* imageNtHeaders = (IMAGE_NT_HEADERS32*)(&this->Signature);
+        stream.pipeWrite(imageNtHeaders,
+                         sizeof(IMAGE_NT_HEADERS32) -
+                            ((IMAGE_NUMBEROF_DIRECTORY_ENTRIES - this->OptionalHeader.NumberOfRvaAndSizes) *
+                             sizeof(IMAGE_DATA_DIRECTORY)));
+    }
 
     // Test for section storage
     if (!shouldWriteSections)
@@ -319,6 +426,8 @@ cStringerStream& operator << (cStringerStream& out,
     {
     case IMAGE_FILE_MACHINE_I386:    out << "Intel 32 bit" << endl; break;
     case IMAGE_FILE_MACHINE_IA64:    out << "Intel 64 bit" << endl; break;
+    case IMAGE_FILE_MACHINE_AMD64:   out << "AMD64 (x64)"  << endl; break;
+    case IMAGE_FILE_MACHINE_ARM64:   out << "ARM 64 bit"   << endl; break;
     case IMAGE_FILE_MACHINE_ALPHA:   out << "DEC Alpha "   << endl; break;
     case IMAGE_FILE_MACHINE_POWERPC: out << "Power PC"     << endl; break;
     default: out << "Unknown - " << HEXWORD(object.FileHeader.Machine) << endl; break;
@@ -349,10 +458,18 @@ cStringerStream& operator << (cStringerStream& out,
     out << "     Size of code:        " << (uint)object.OptionalHeader.SizeOfCode << endl;
     out << "     SzInitializedData:   " << (uint)object.OptionalHeader.SizeOfInitializedData << endl;
     out << "     SzUninitialiezdData: " << (uint)object.OptionalHeader.SizeOfUninitializedData << endl;
-    out << "     AddressOfEntryPoint: " << HEXDWORD(object.OptionalHeader.AddressOfEntryPoint + object.OptionalHeader.ImageBase) << endl;
-    out << "     BaseOfCode:          " << HEXDWORD(object.OptionalHeader.BaseOfCode          + object.OptionalHeader.ImageBase) << endl;
-    out << "     BaseOfData:          " << HEXDWORD(object.OptionalHeader.BaseOfData          + object.OptionalHeader.ImageBase) << endl;
-    out << "     ImageBase:           " << HEXDWORD(object.OptionalHeader.ImageBase) << endl;
+    if (object.is64bit())
+    {
+        out << "     AddressOfEntryPoint: " << HEXQWORD(object.OptionalHeader.AddressOfEntryPoint + object.getImageBase()) << endl;
+        out << "     BaseOfCode:          " << HEXQWORD(object.OptionalHeader.BaseOfCode          + object.getImageBase()) << endl;
+        out << "     ImageBase:           " << HEXQWORD(object.getImageBase()) << endl;
+    } else
+    {
+        out << "     AddressOfEntryPoint: " << HEXDWORD(object.OptionalHeader.AddressOfEntryPoint + object.OptionalHeader.ImageBase) << endl;
+        out << "     BaseOfCode:          " << HEXDWORD(object.OptionalHeader.BaseOfCode          + object.OptionalHeader.ImageBase) << endl;
+        out << "     BaseOfData:          " << HEXDWORD(object.OptionalHeader.BaseOfData          + object.OptionalHeader.ImageBase) << endl;
+        out << "     ImageBase:           " << HEXDWORD(object.OptionalHeader.ImageBase) << endl;
+    }
     out << "     SectionAlignment:    " << (uint)object.OptionalHeader.SectionAlignment  << endl;
     out << "     FileAlignment:       " << (uint)object.OptionalHeader.FileAlignment << endl;
     out << "     OS version:          " << (uint)object.OptionalHeader.MajorOperatingSystemVersion << "." << (uint)object.OptionalHeader.MinorOperatingSystemVersion << endl;
@@ -374,10 +491,20 @@ cStringerStream& operator << (cStringerStream& out,
     default: out << "Unkwon subsystem: " << HEXWORD(object.OptionalHeader.Subsystem);
     }
     out << endl;
-    out << "     SizeOfStackReserve:  " << HEXDWORD(object.OptionalHeader.SizeOfStackReserve)  << endl;
-    out << "     SizeOfStackCommit:   " << HEXDWORD(object.OptionalHeader.SizeOfStackCommit)   << endl;
-    out << "     SizeOfHeapReserve:   " << HEXDWORD(object.OptionalHeader.SizeOfHeapReserve)   << endl;
-    out << "     SizeOfHeapCommit:    " << HEXDWORD(object.OptionalHeader.SizeOfHeapCommit)    << endl;
+    if (object.is64bit())
+    {
+        const IMAGE_OPTIONAL_HEADER64& optionalHeader64 = object.getNtHeaders64().OptionalHeader;
+        out << "     SizeOfStackReserve:  " << HEXQWORD(optionalHeader64.SizeOfStackReserve)  << endl;
+        out << "     SizeOfStackCommit:   " << HEXQWORD(optionalHeader64.SizeOfStackCommit)   << endl;
+        out << "     SizeOfHeapReserve:   " << HEXQWORD(optionalHeader64.SizeOfHeapReserve)   << endl;
+        out << "     SizeOfHeapCommit:    " << HEXQWORD(optionalHeader64.SizeOfHeapCommit)    << endl;
+    } else
+    {
+        out << "     SizeOfStackReserve:  " << HEXDWORD(object.OptionalHeader.SizeOfStackReserve)  << endl;
+        out << "     SizeOfStackCommit:   " << HEXDWORD(object.OptionalHeader.SizeOfStackCommit)   << endl;
+        out << "     SizeOfHeapReserve:   " << HEXDWORD(object.OptionalHeader.SizeOfHeapReserve)   << endl;
+        out << "     SizeOfHeapCommit:    " << HEXDWORD(object.OptionalHeader.SizeOfHeapCommit)    << endl;
+    }
     out << "     LoaderFlags:         " << (uint)object.OptionalHeader.LoaderFlags         << endl;
     out << "     NumberOfRvaAndSizes: " << (uint)object.OptionalHeader.NumberOfRvaAndSizes << endl;
 
@@ -388,8 +515,12 @@ cStringerStream& operator << (cStringerStream& out,
             /* Print only the active directories */
             out << "Dir#" << HEXBYTE(i) << " size: "<<
                 HEXDWORD(object.OptionalHeader.DataDirectory[i].Size) <<
-                " location: " << HEXDWORD(object.OptionalHeader.DataDirectory[i].VirtualAddress + object.OptionalHeader.ImageBase) <<
-                " - " << cHumanStringTranslation::getWindowsDirectoryName(i) << endl;
+                " location: ";
+            if (object.is64bit())
+                out << HEXQWORD(object.OptionalHeader.DataDirectory[i].VirtualAddress + object.getImageBase());
+            else
+                out << HEXDWORD(object.OptionalHeader.DataDirectory[i].VirtualAddress + object.OptionalHeader.ImageBase);
+            out << " - " << cHumanStringTranslation::getWindowsDirectoryName(i) << endl;
         }
     }
 
@@ -432,6 +563,24 @@ bool cNtHeader::getSections(cList<cSectionPtr>& sections) const
         return false;
     sections = m_sections;
     return true;
+}
+
+bool cNtHeader::is64bit() const
+{
+    return this->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+}
+
+uint64 cNtHeader::getImageBase() const
+{
+    if (is64bit())
+        return m_ntHeaders64.OptionalHeader.ImageBase;
+    return this->OptionalHeader.ImageBase;
+}
+
+const IMAGE_NT_HEADERS64& cNtHeader::getNtHeaders64() const
+{
+    CHECK(is64bit());
+    return m_ntHeaders64;
 }
 
 //////////////////////////////////////////////////////////////////////////

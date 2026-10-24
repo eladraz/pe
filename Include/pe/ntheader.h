@@ -71,6 +71,13 @@ typedef cSmartPtr<cNtHeader> cNtHeaderPtr;
 
 /*
  * Parse the PE header and sections for coff binary file format.
+ *
+ * Both PE32 (Win32) and PE32+ (Win64) files are supported. The
+ * IMAGE_NT_HEADERS32 base holds the fields which are common to both formats.
+ * For PE32+ files, the 64 bit fields (ImageBase, SizeOfStackReserve,
+ * SizeOfStackCommit, SizeOfHeapReserve and SizeOfHeapCommit) are truncated to
+ * 32 bit and BaseOfData is zero. Use getImageBase() or getNtHeaders64() in
+ * order to get the full values.
  */
 class cNtHeader : public IMAGE_NT_HEADERS32
 {
@@ -105,6 +112,13 @@ public:
      */
     cNtHeader(const IMAGE_NT_HEADERS32& other);
 
+    /*
+     * Copy-constructor.
+     * Construct a new cNtHeader object and copy the data from
+     * IMAGE_NT_HEADERS64 struct.
+     */
+    cNtHeader(const IMAGE_NT_HEADERS64& other);
+
     // Functions
 
     /*
@@ -117,6 +131,14 @@ public:
     void changeNtHeader(const IMAGE_NT_HEADERS32& other);
 
     /*
+     * Copy the data from another IMAGE_NT_HEADERS64 to this class.
+     * Make the header valid.
+     *
+     * See changeNtHeader(const IMAGE_NT_HEADERS32&)
+     */
+    void changeNtHeader(const IMAGE_NT_HEADERS64& other);
+
+    /*
      * Operator = IMAGE_NT_HEADERS.
      * See changeNtHeader.
      *
@@ -124,6 +146,12 @@ public:
      *       relocations.
      */
     cNtHeader& operator = (const IMAGE_NT_HEADERS32& other);
+
+    /*
+     * Operator = IMAGE_NT_HEADERS64.
+     * See operator = (const IMAGE_NT_HEADERS32&)
+     */
+    cNtHeader& operator = (const IMAGE_NT_HEADERS64& other);
 
     /*
      * Read a NT-PE file from a stream. The stream must be pointed to the
@@ -219,6 +247,23 @@ public:
      */
     bool getSections(cList<cSectionPtr>& sections) const;
 
+    /*
+     * Returns true if the header is a PE32+ (Win64) header, false for PE32.
+     */
+    bool is64bit() const;
+
+    /*
+     * Returns the full ImageBase of the PE file, for both PE32 and PE32+.
+     */
+    uint64 getImageBase() const;
+
+    /*
+     * Returns the full PE32+ header.
+     *
+     * Throw exception if the header isn't a PE32+ header. See is64bit().
+     */
+    const IMAGE_NT_HEADERS64& getNtHeaders64() const;
+
 private:
     // The drawing function should be friend
     #ifdef PE_TRACE
@@ -293,6 +338,9 @@ private:
 
     // The true image base that the PE was loaded to
     addressNumericValue m_trueImageBase;
+
+    // The full PE32+ header. Valid only if is64bit() is true
+    IMAGE_NT_HEADERS64 m_ntHeaders64;
 };
 
 #endif // __TBA_PE_NT_HEADER_H

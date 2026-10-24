@@ -1,4 +1,5 @@
-# Build dumpPE against the peLib/xStl MSVC libraries and run it on a PE32 DLL.
+# Build dumpPE against the peLib/xStl MSVC libraries and run it on PE32 and
+# PE32+ DLLs.
 # Usage: windows.ps1 -Configuration Debug|Release -Platform Win32|x64
 # Requires a developer prompt for the matching architecture (cl.exe on PATH)
 # and XSTL_PATH.
@@ -25,13 +26,15 @@ New-Item -ItemType Directory -Force $outDir | Out-Null
     /link "$env:XSTL_PATH\out\$libDir\xStl\xStl.lib" "out\$libDir\peLib\peLib.lib"
 if ($LASTEXITCODE -ne 0) { throw "dumpPE build failed" }
 
-# The 32-bit kernel32 is a PE32 file regardless of the architecture of dumpPE
-$dll = "$env:SystemRoot\SysWOW64\kernel32.dll"
-$out = & "$outDir\dumpPE.exe" $dll
-if ($LASTEXITCODE -ne 0) { throw "dumpPE exited with $LASTEXITCODE" }
-foreach ($name in 'CreateFileW', 'ReadFile', 'LoadLibraryW') {
-    if (-not ($out | Select-String -SimpleMatch $name -Quiet)) {
-        throw "export $name not found"
+# SysWOW64\kernel32.dll is a PE32 file and System32\kernel32.dll is a PE32+
+# file, regardless of the architecture of dumpPE
+foreach ($dll in "$env:SystemRoot\SysWOW64\kernel32.dll", "$env:SystemRoot\System32\kernel32.dll") {
+    $out = & "$outDir\dumpPE.exe" $dll
+    if ($LASTEXITCODE -ne 0) { throw "dumpPE exited with $LASTEXITCODE on $dll" }
+    foreach ($name in 'CreateFileW', 'ReadFile', 'LoadLibraryW') {
+        if (-not ($out | Select-String -SimpleMatch $name -Quiet)) {
+            throw "export $name not found in $dll"
+        }
     }
+    Write-Host "PASS: $Configuration|$Platform $dll ($($out.Count) lines)"
 }
-Write-Host "PASS: $Configuration|$Platform ($($out.Count) lines)"
