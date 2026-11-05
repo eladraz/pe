@@ -162,12 +162,12 @@ void cNtDirImport::readDirectory(const cNtHeader& header,
     const bool is64bit = header.is64bit();
     const uint thunkSize = is64bit ? sizeof(uint64) : sizeof(uint32);
 
-    // Walk the import descriptors until the all-zero terminator. The
-    // descriptors must reside inside the import directory.
+    // Walk the import descriptors until the all-zero terminator. The declared
+    // directory size is not enforced: real linkers sometimes omit the
+    // terminator from it, and the Windows loader ignores it. Every read is
+    // bounded by the section holding the table instead.
     for (uint64 offset = 0; ; offset += sizeof(IMAGE_IMPORT_DESCRIPTOR))
     {
-        CHECK_MSG(offset + sizeof(IMAGE_IMPORT_DESCRIPTOR) <= size,
-                  "import table: missing terminating descriptor");
 
         IMAGE_IMPORT_DESCRIPTOR descriptor;
         readRva(sections, address + offset, &descriptor, sizeof(descriptor));

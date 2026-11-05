@@ -248,7 +248,11 @@ void cNtHeader::read(basicInput& stream,
         changeNtHeader(newHeader);
     }
 
-    // Read DATA_DIRCTORIES. Limited by the number of RVA
+    // Read DATA_DIRCTORIES. Limited by the number of RVA, which must fit the
+    // fixed size directory table
+    CHECK_MSG(this->OptionalHeader.NumberOfRvaAndSizes <=
+                  IMAGE_NUMBEROF_DIRECTORY_ENTRIES,
+              "too many data directories");
     uint i;
     for (i = 0; i < this->OptionalHeader.NumberOfRvaAndSizes; i++)
         stream.pipeRead(&this->OptionalHeader.DataDirectory[i],
