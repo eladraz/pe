@@ -40,6 +40,8 @@
 #include "xStl/remoteAddress.h"
 #include "xStl/data/char.h"
 #include "xStl/data/string.h"
+#include "xStl/data/list.h"
+#include "xStl/data/datastream.h"
 #include "xStl/except/trace.h"
 #include "xStl/except/exception.h"
 #include "xStl/stream/traceStream.h"
@@ -52,6 +54,24 @@
 #include "pe/dosheader.h"
 #include "pe/ntheader.h"
 #include "pe/ntDirExport.h"
+#include "pe/ntDirImport.h"
+
+/*
+ * Returns the human readable name of an IMAGE_FILE_MACHINE_* value.
+ */
+static const char* getMachineName(uint16 machine)
+{
+    switch (machine)
+    {
+    case IMAGE_FILE_MACHINE_I386:    return "Intel 32 bit";
+    case IMAGE_FILE_MACHINE_AMD64:   return "AMD64 (x64)";
+    case IMAGE_FILE_MACHINE_ARM64:   return "ARM 64 bit";
+    case IMAGE_FILE_MACHINE_RISCV32: return "RISC-V 32";
+    case IMAGE_FILE_MACHINE_RISCV64: return "RISC-V 64";
+    case IMAGE_FILE_MACHINE_RISCV128: return "RISC-V 128";
+    default:                         return "Unknown";
+    }
+}
 
 /*
  * The main entry point. Captures all unexpected exceptions and make sure
@@ -99,8 +119,13 @@ int main(const int argc, const char** argv)
         }
         cNtHeader ntFile(peFileStream);
 
-        // Read the export-table
-        cNtDirExport export_dir(ntFile);
+        cout << "Machine: " << getMachineName(ntFile.FileHeader.Machine)
+             << " (" << HEXWORD(ntFile.FileHeader.Machine) << ")" << endl;
+
+        // Read the export-table, if the image has one
+        cNtDirExport export_dir;
+        if (ntFile.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size != 0)
+            export_dir.readDirectory(ntFile);
         //cout << export_dir;
 
         /**/
@@ -124,6 +149,25 @@ int main(const int argc, const char** argv)
         /**/
 
         // Read the import-table
+        cNtDirImport import_dir(ntFile);
+        uint64 imageBase = ntFile.getImageBase();
+        cout << "Imports:" << endl;
+        const cList<cNtDirImport::Module>& modules = import_dir.getModules();
+        cList<cNtDirImport::Module>::iterator module = modules.begin();
+        for (; module != modules.end(); ++module)
+        {
+            const cList<cNtDirImport::Entry>& entries = (*module).entries;
+            cList<cNtDirImport::Entry>::iterator entry = entries.begin();
+            for (; entry != entries.end(); ++entry)
+            {
+                cout << "  " << (*module).name << "!";
+                if ((*entry).byOrdinal)
+                    cout << "#" << (uint)(*entry).ordinal;
+                else
+                    cout << (*entry).name;
+                cout << " iat=" << HEXQWORD(imageBase + (*entry).iatRva) << endl;
+            }
+        }
 
         return RC_OK;
     }

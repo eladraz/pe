@@ -146,6 +146,9 @@ typedef struct XSTL_PACKED _IMAGE_FILE_HEADER {
 #define IMAGE_FILE_MACHINE_AXP64             IMAGE_FILE_MACHINE_ALPHA64
 #define IMAGE_FILE_MACHINE_AMD64             0x8664  // AMD64 (K8)
 #define IMAGE_FILE_MACHINE_ARM64             0xAA64  // ARM64 Little-Endian
+#define IMAGE_FILE_MACHINE_RISCV32           0x5032  // RISC-V 32-bit address space
+#define IMAGE_FILE_MACHINE_RISCV64           0x5064  // RISC-V 64-bit address space
+#define IMAGE_FILE_MACHINE_RISCV128          0x5128  // RISC-V 128-bit address space
 //
 // Directory format.
 //

@@ -193,7 +193,9 @@ void cNtSectionHeader::read(basicInput& stream,
     // Reads the IMAGE_SECTION_HEADER
     IMAGE_SECTION_HEADER newHeader;
     memset(&newHeader, 0, sizeof(newHeader));
-    stream.pipeRead(&newHeader, sizeof(newHeader));
+    // A truncated header must fail here: pipeRead reports a short read
+    // without an error, which would leave the section table silently zeroed
+    stream.pipeReadNotEos(&newHeader, sizeof(newHeader));
     // Change it. and reset the content of the section
     changeNtSection(newHeader);
 
@@ -207,6 +209,11 @@ void cNtSectionHeader::read(basicInput& stream,
         // Read section data
         if (!isMemory)
         {
+            // The raw data must be inside the file. Reading past the end of a
+            // truncated file never completes, so refuse it up front.
+            CHECK_MSG((uint64)PointerToRawData + SizeOfRawData <= stream.length(),
+                      "section data is beyond the end of the file");
+
             // Seek to the file postion
             stream.seek(this->PointerToRawData, basicInput::IO_SEEK_SET);
             data->changeSize(this->SizeOfRawData, false);

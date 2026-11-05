@@ -9,7 +9,7 @@ endif
 lib_LTLIBRARIES = libpe.la
 
 libpe_la_SOURCES = dosheader.cpp humanStringTranslation.cpp ntDirCli.cpp ntsectionheader.cpp pePrecompiledHeaders.cpp \
-                   dosSection.cpp ntDirExport.cpp ntPrivateDirectory.cpp peFile.cpp section.cpp ntheader.cpp ntDirReloc.cpp
+                   dosSection.cpp ntDirExport.cpp ntPrivateDirectory.cpp peFile.cpp section.cpp ntheader.cpp ntDirReloc.cpp ntDirImport.cpp
 
 libpe_la_CFLAGS = $(CFLAGS_PELIB_COMMON) $(DBGFLAGS) $(AM_CFLAGS)
 libpe_la_CPPFLAGS = $(CFLAGS_PELIB_COMMON) $(DBGFLAGS) $(AM_CFLAGS)

@@ -430,6 +430,9 @@ cStringerStream& operator << (cStringerStream& out,
     case IMAGE_FILE_MACHINE_ARM64:   out << "ARM 64 bit"   << endl; break;
     case IMAGE_FILE_MACHINE_ALPHA:   out << "DEC Alpha "   << endl; break;
     case IMAGE_FILE_MACHINE_POWERPC: out << "Power PC"     << endl; break;
+    case IMAGE_FILE_MACHINE_RISCV32:  out << "RISC-V 32"    << endl; break;
+    case IMAGE_FILE_MACHINE_RISCV64:  out << "RISC-V 64"    << endl; break;
+    case IMAGE_FILE_MACHINE_RISCV128: out << "RISC-V 128"   << endl; break;
     default: out << "Unknown - " << HEXWORD(object.FileHeader.Machine) << endl; break;
     }
 

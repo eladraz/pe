@@ -44,6 +44,7 @@ list(APPEND PE_LIB_FILES
 	Source/pe/section.cpp
 	Source/pe/ntheader.cpp
 	Source/pe/ntDirReloc.cpp
+	Source/pe/ntDirImport.cpp
 )
 
 add_library(pe_static STATIC ${PE_LIB_FILES})
