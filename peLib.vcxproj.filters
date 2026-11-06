@@ -48,6 +48,9 @@
     <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirReloc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirImport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(PELIB_PATH)\Include\pe\datastruct.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirReloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

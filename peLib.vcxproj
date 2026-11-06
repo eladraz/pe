@@ -385,6 +385,7 @@
     <ClCompile Include="$(PELIB_PATH)\Source\pe\peFile.cpp" />
     <ClCompile Include="$(PELIB_PATH)\Source\pe\section.cpp" />
     <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirReloc.cpp" />
+    <ClCompile Include="$(PELIB_PATH)\Source\pe\ntDirImport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(PELIB_PATH)\Include\pe\datastruct.h" />
@@ -401,6 +402,7 @@
     <ClInclude Include="$(PELIB_PATH)\Include\pe\section.h" />
     <ClInclude Include="$(PELIB_PATH)\Include\pe\sectionTypes.h" />
     <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirReloc.h" />
+    <ClInclude Include="$(PELIB_PATH)\Include\pe\ntDirImport.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
