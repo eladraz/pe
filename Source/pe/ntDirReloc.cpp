@@ -93,11 +93,18 @@ void cNtDirReloc::read(basicInput& stream)
     // Start reading the relocation blocks
     IMAGE_BASE_RELOCATION currReloc;
     WORD relocItem;
-    int totalRelocs = 0;
+    uint totalRelocs = 0;
     while(!stream.isEOS())
     {
         // Read the current block header
         stream.pipeRead(&currReloc, sizeof(currReloc));
+
+        // A block is its 8 byte header followed by whole WORD items. A smaller
+        // SizeOfBlock would make the item count underflow.
+        CHECK_MSG(currReloc.SizeOfBlock >= sizeof(IMAGE_BASE_RELOCATION),
+                  "bad relocation block size");
+        CHECK_MSG((currReloc.SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) % sizeof(WORD) == 0,
+                  "bad relocation block size");
 
         // Calculate the number of items in the block
         DWORD numItems = (currReloc.SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
@@ -113,9 +120,11 @@ void cNtDirReloc::read(basicInput& stream)
                 break;
             case IMAGE_REL_BASED_HIGHLOW:
             case IMAGE_REL_BASED_DIR64:
-                // Calculate and set the offset address. HIGHLOW is a 32 bit
-                // relocation (PE32), DIR64 is a 64 bit relocation (PE32+)
+                // HIGHLOW is a 32 bit relocation (PE32), DIR64 is a 64 bit
+                // relocation (PE32+, including ARM64). Keep the type too.
+                CHECK_MSG(totalRelocs < m_relocOffsets.getSize(), "bad relocation table");
                 m_relocOffsets[totalRelocs].m_offsetAddress = currReloc.VirtualAddress + (relocItem & 0xFFF);
+                m_relocOffsets[totalRelocs].m_type = (uint16)(relocItem >> 12);
                 totalRelocs++;
                 break;
             default:
@@ -125,7 +134,7 @@ void cNtDirReloc::read(basicInput& stream)
     }
 
     // Set the final relocation table size
-    m_relocOffsets.changeSize(totalRelocs);
+    m_relocOffsets.changeSize((uint)totalRelocs);
 }
 
 const cNtDirReloc::RelocTable& cNtDirReloc::getRelocArray() const
