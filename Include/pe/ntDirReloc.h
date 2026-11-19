@@ -126,6 +126,9 @@ public:
 
         // The virtual (relative) address of the reloc offset
         remoteAddressNumericValue m_offsetAddress;
+        // The IMAGE_REL_BASED_* type of the entry (HIGHLOW=3 or DIR64=10).
+        // ABSOLUTE padding entries are not stored.
+        uint16 m_type;
         // The virtual (relative) address of the content the offset points to
         //remoteAddressNumericValue m_contentAddress;
 

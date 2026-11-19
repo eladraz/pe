@@ -55,6 +55,7 @@
 #include "pe/ntheader.h"
 #include "pe/ntDirExport.h"
 #include "pe/ntDirImport.h"
+#include "pe/ntDirReloc.h"
 
 /*
  * Returns the human readable name of an IMAGE_FILE_MACHINE_* value.
@@ -74,6 +75,19 @@ static const char* getMachineName(uint16 machine)
 }
 
 /*
+ * Returns the name of an IMAGE_REL_BASED_* value that the reloc parser keeps.
+ */
+static const char* getRelocTypeName(uint16 type)
+{
+    switch (type)
+    {
+    case IMAGE_REL_BASED_HIGHLOW: return "HIGHLOW";
+    case IMAGE_REL_BASED_DIR64:   return "DIR64";
+    default:                      return "UNKNOWN";
+    }
+}
+
+/*
  * The main entry point. Captures all unexpected exceptions and make sure
  * that the application will notify the programmer.
  *
@@ -85,14 +99,19 @@ int main(const int argc, const char** argv)
 {
     XSTL_TRY
     {
-        if (argc != 2)
+        // Usage: dumpPE [-r] <filename>
+        //   -r  print only the base relocations, one "RELOC <type> 0x<rva>"
+        //       line per entry (HIGHLOW or DIR64)
+        bool relocsOnly = (argc == 3 && strcmp(argv[1], "-r") == 0);
+        if (argc != 2 && !relocsOnly)
         {
-            cout << "Usage: dumpPE <filename>" << endl;
+            cout << "Usage: dumpPE [-r] <filename>" << endl;
             return RC_ERROR;
         }
+        const char* fileName = relocsOnly ? argv[2] : argv[1];
 
         // Load a file
-        cFileStream peFileStream(argv[1]);
+        cFileStream peFileStream(fileName);
 
         // Load from memory
         /*
@@ -118,6 +137,21 @@ int main(const int argc, const char** argv)
             return RC_ERROR;
         }
         cNtHeader ntFile(peFileStream);
+
+        if (relocsOnly)
+        {
+            // A PE without a base relocation directory has no RELOC lines
+            cNtDirReloc reloc_dir;
+            if (ntFile.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].Size != 0)
+                reloc_dir.readDirectory(ntFile);
+            const cNtDirReloc::RelocTable& relocs = reloc_dir.getRelocArray();
+            for (uint i = 0; i < relocs.getSize(); i++)
+            {
+                cout << "RELOC " << getRelocTypeName(relocs[i].m_type)
+                     << " 0x" << HEXDWORD(NR_ADDRESS(relocs[i].m_offsetAddress)) << endl;
+            }
+            return RC_OK;
+        }
 
         cout << "Machine: " << getMachineName(ntFile.FileHeader.Machine)
              << " (" << HEXWORD(ntFile.FileHeader.Machine) << ")" << endl;
